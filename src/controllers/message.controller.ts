@@ -27,10 +27,8 @@ export class MessageController {
 
     // Setup message listener
     setupListener(req: SetupListenerDto, res: Response) {
-        console.log('req', req.userId);
         listenSpecificEvent('message-' + req.userId, (data) => {
             console.log('Received chat message:', data);
-
 
             // STORE TO DB IF NEEDED
             

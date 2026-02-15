@@ -4,17 +4,17 @@ import { createServer } from 'http';
 import chatRoutes from './routes/chat.routes';
 import userRoutes from './routes/user.routes';
 import messageRoutes from './routes/message.routes';
-
-const PORT = 3500;
-
-import { generateTitleCase, countUniqueWordInString, delay, fetchData, processData } from './utils/helpers';
 import { initSockets } from './utils/socket';
+
+// import { generateTitleCase, countUniqueWordInString, delay, fetchData, processData } from './utils/helpers';
+
+require('dotenv').config();
 
 const app = express();
 
 // CORS Configuration
 const corsOptions = {
-    origin: 'http://localhost:5175',
+    origin: process.env.FRONTEND_URL || "http://localhost:5175",
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -22,6 +22,8 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -38,25 +40,25 @@ app.use('/api/users', userRoutes);
 app.use('/api/messages', messageRoutes);
 
 // >>>>>>>>>>>>>> TEST RESULT <<<<<<<<<<<<
-console.log('titleCase', generateTitleCase("I'm a little tea pot"));
+// console.log('titleCase', generateTitleCase("I'm a little tea pot"));
 
-console.log('count unique word', countUniqueWordInString("Four One two two three Three three four  four   four"));
+// console.log('count unique word', countUniqueWordInString("Four One two two three Three three four  four   four"));
 
-delay(3000).then(() => console.log('runs after 3 seconds'));
+// delay(3000).then(() => console.log('runs after 3 seconds'));
 
-fetchData(null, (err, data) => {
-    if (err) {
-        console.error("Fetch Error:", err);
-    } else {
-        processData(data, (err, processedData) => {
-            if (err) {
-                console.error("Process Error:", err);
-            } else {
-                console.log("Processed Data:", processedData);
-            }
-        });
-    }
-});
+// fetchData(null, (err, data) => {
+//     if (err) {
+//         console.error("Fetch Error:", err);
+//     } else {
+//         processData(data, (err, processedData) => {
+//             if (err) {
+//                 console.error("Process Error:", err);
+//             } else {
+//                 console.log("Processed Data:", processedData);
+//             }
+//         });
+//     }
+// });
 // >>>>>>>>>>>>>> TEST RESULT <<<<<<<<<<<<
 
 // Create HTTP server from Express app
@@ -68,7 +70,6 @@ initSockets(httpServer);
 httpServer.listen(PORT, () => {
     console.log(`Express + Socket.IO server running on port ${PORT}`);
     console.log(`API: http://localhost:${PORT}`);
-    console.log(`WebSocket: ws://localhost:${PORT}`);
 });
 
 export {};
